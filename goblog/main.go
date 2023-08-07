@@ -49,6 +49,15 @@ func initDB() {
 	checkError(err)
 
 }
+func createTables() {
+	createAriticlesSQL := `CREATE TABLE IF NOT EXISTS articles(
+				id bigint(20) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+				title varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+				body longtext COLLATE utf8mb4_unicode_ci
+			); `
+	_, err := db.Exec(createAriticlesSQL)
+	checkError(err)
+}
 
 func checkError(err error) {
 	if err != nil {
@@ -162,6 +171,7 @@ func articleCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	initDB()
+	createTables()
 	router.HandleFunc("/", homeHandler).Methods("GET").Name("home")
 	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
 	router.HandleFunc("/articles/{id:[0-9]+}/{path:.*}", articlesShowHandler).Methods("GET").Name("articles.show")
